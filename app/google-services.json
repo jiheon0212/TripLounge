@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "779507297078",
+    "project_id": "triplounge-7b618",
+    "storage_bucket": "triplounge-7b618.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:779507297078:android:724486eac223065ae1e197",
+        "android_client_info": {
+          "package_name": "com.myproject.triplounge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "779507297078-9lvi1qpgbe83s930187qm7mk64pamsdv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9S4ku2K3wPwZ_xLPcZZg8JfZUPXha5vE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "779507297078-9lvi1qpgbe83s930187qm7mk64pamsdv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
