@@ -1,8 +1,5 @@
 package com.myproject.triplounge
 
-import android.content.Context
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,31 +9,24 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
+import com.myproject.triplounge.data.StoryDataClass
 import com.myproject.triplounge.databinding.FragmentStoryMainBinding
 import com.myproject.triplounge.databinding.StoryMainRowBinding
-import java.net.HttpURLConnection
-import java.net.URL
-import kotlin.concurrent.thread
 
 class StoryMainFragment : Fragment() {
 
     lateinit var fragmentStoryMainBinding: FragmentStoryMainBinding
     lateinit var mainActivity: MainActivity
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         fragmentStoryMainBinding = FragmentStoryMainBinding.inflate(layoutInflater)
         mainActivity = activity as MainActivity
-        mainActivity.getData()
 
         fragmentStoryMainBinding.run {
 
@@ -64,7 +54,8 @@ class StoryMainFragment : Fragment() {
             var tvUserNickname: TextView
             var tvDate: TextView
             var ivUploaded: ImageView
-            var tvUserText: TextView
+            var tvStoryTitle: TextView
+            var tvStoryText: TextView
             var btnLike: Button
             var tvLikeCount: TextView
 
@@ -72,7 +63,8 @@ class StoryMainFragment : Fragment() {
                 tvUserNickname = storyMainRowBinding.tvUserNickname
                 tvDate = storyMainRowBinding.tvDate
                 ivUploaded = storyMainRowBinding.ivUploaded
-                tvUserText = storyMainRowBinding.tvUserText
+                tvStoryTitle = storyMainRowBinding.tvStoryTitle
+                tvStoryText = storyMainRowBinding.tvStoryText
                 btnLike = storyMainRowBinding.btnLike
                 btnLike.setOnClickListener {
 
@@ -97,27 +89,16 @@ class StoryMainFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-
-            return mainActivity.storyList.size
+            return 0
         }
 
         override fun onBindViewHolder(holder: StoryMainViewHolder, position: Int) {
-
-            holder.tvUserNickname.text = "testUser_$position"
-            holder.tvDate.text =  mainActivity.storyList[position].postWriteDate
-            mainActivity.getImage( mainActivity.storyList[position].postImage , holder.ivUploaded)
-            holder.tvLikeCount.text = "testLike : $position"
-            holder.tvUserText.text =  mainActivity.storyList[position].postTitle
-            holder.tvUserText.append("\n${ mainActivity.storyList[position].postText}")
+            holder.tvUserNickname.text = "unknown user_$position"
+            holder.tvDate
+            holder.ivUploaded
+            holder.tvStoryTitle
+            holder.tvStoryText
+            holder.tvLikeCount.text = "liked : $position"
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        mainActivity.getData()
-        fragmentStoryMainBinding.recyclerStoryMain.adapter?.notifyDataSetChanged()
-        Log.d("!!", "${mainActivity.storyList.size}")
-    }
-
-
 }

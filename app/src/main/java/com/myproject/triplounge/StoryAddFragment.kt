@@ -16,9 +16,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
+import com.myproject.triplounge.data.StoryDataClass
 import com.myproject.triplounge.databinding.FragmentStoryAddBinding
+import com.myproject.triplounge.repository.StoryRepository
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -41,58 +41,57 @@ class StoryAddFragment : Fragment() {
         albumLauncher = albumSetting(fragmentStoryAddBinding.ivbtnStoryAddUpload)
 
         fragmentStoryAddBinding.run {
+
+            // imagebtn click -> select image
             ivbtnStoryAddUpload.setOnClickListener {
-                // 사진 가져오기
+
+                // get image from album
                 val newIntent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 newIntent.setType("image/*")
                 val mimeType = arrayOf("image/*")
                 newIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeType)
                 albumLauncher.launch(newIntent)
-                // 사진 촬영하기
-                // todo : dialog를 통해 사용자가 사진을 촬영 & 가져오기 결정
+
+                // get image from taking photo
+                // todo : dialog 통해 사용자가 사진을 get image & create image 결정
             }
             toolbarStoryAdd.run {
+
                 title = "todo_story_add_fragment"
                 inflateMenu(R.menu.story_add_menu)
                 setOnMenuItemClickListener {
 
-                    val title = tiedtStoryAddTitle.text.toString()
-                    val text = tiedtStoryAddText.text.toString()
+                    StoryRepository.getStoryIdx {
 
-                    val database = FirebaseDatabase.getInstance()
-                    val postIdxRef = database.getReference("PostIdx")
-                    postIdxRef.get().addOnCompleteListener {
-
-                        // todo : 게시물 삭제 시 postIdx를 감소시켜야됨
-                        var postIdx = it.result.value as Long
-                        postIdx++
-
+                        // todo : 게시물 삭제 시 storyIdx 감소 메서드 제작
+                        // class 매개 변수 setting
+                        var storyIdx = it.result.value as Long
+                        storyIdx++
                         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                         val writeDate = sdf.format(Date(System.currentTimeMillis()))
-
+                        val title = tiedtStoryAddTitle.text.toString()
+                        val text = tiedtStoryAddText.text.toString()
                         val fileName = if (uploadUri == null){
                             "None"
                         } else {
                             "images/img_${System.currentTimeMillis()}.jpg"
                         }
+                        val storyDataClass = StoryDataClass(storyIdx, "unknown user", writeDate, fileName, title, text)
 
-                        val storyDataClass = StoryDataClass(postIdx, "Tester", writeDate, fileName, title, text)
-                        val storyDataRef = database.getReference("StoryData")
-                        storyDataRef.push().setValue(storyDataClass).addOnCompleteListener {
-                            postIdxRef.get().addOnCompleteListener {
-                                it.result.ref.setValue(postIdx).addOnCompleteListener {
-                                    if (uploadUri != null) {
-                                        val storage = FirebaseStorage.getInstance()
-                                        val imageRef = storage.reference.child(fileName)
-                                        imageRef.putFile(uploadUri!!).addOnCompleteListener{
-                                            Snackbar.make(fragmentStoryAddBinding.root, "Save Complete", Snackbar.LENGTH_SHORT).show()
-                                            mainActivity.replaceFragment(MainActivity.STORY_MAIN_FRAGMENT, false)
-                                        }
+                        // storage image upload method 제작
+                        StoryRepository.addStory(storyDataClass) {
+
+                            StoryRepository.setStoryIdx(storyIdx) {
+
+                                if (uploadUri != null) {
+                                    StoryRepository.uploadStoryImage(uploadUri!!, fileName){
+                                        Snackbar.make(fragmentStoryAddBinding.root, "Image Uploaded", Snackbar.LENGTH_SHORT).show()
+                                        mainActivity.replaceFragment(MainActivity.STORY_MAIN_FRAGMENT, true)
                                     }
-                                    else {
-                                        Snackbar.make(fragmentStoryAddBinding.root, "Image is null", Snackbar.LENGTH_SHORT).show()
-                                        mainActivity.replaceFragment(MainActivity.STORY_MAIN_FRAGMENT, false)
-                                    }
+                                }
+                                else {
+                                    Snackbar.make(fragmentStoryAddBinding.root, "Image is Null", Snackbar.LENGTH_SHORT).show()
+                                    mainActivity.replaceFragment(MainActivity.STORY_MAIN_FRAGMENT, true)
                                 }
                             }
                         }
@@ -105,25 +104,31 @@ class StoryAddFragment : Fragment() {
         return fragmentStoryAddBinding.root
     }
 
+    // todo : ablumSetting method 학습
     fun albumSetting(previewImageView: ImageView) : ActivityResultLauncher<Intent>{
 
         val albumContract = ActivityResultContracts.StartActivityForResult()
         val albumLauncher = registerForActivityResult(albumContract){
 
             if(it.resultCode == AppCompatActivity.RESULT_OK){
+
                 // 선택한 이미지에 접근할 수 있는 Uri 객체를 추출한다.
                 if(it.data?.data != null){
+
                     uploadUri = it.data?.data
 
                     // 안드로이드 10 (Q) 이상이라면...
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+
                         // 이미지를 생성할 수 있는 디코더를 생성한다.
                         val source = ImageDecoder.createSource(mainActivity.contentResolver, uploadUri!!)
                         // Bitmap객체를 생성한다.
                         val bitmap = ImageDecoder.decodeBitmap(source)
 
                         previewImageView.setImageBitmap(bitmap)
-                    } else {
+                    }
+                    else {
+
                         // 컨텐츠 프로바이더를 통해 이미지 데이터 정보를 가져온다.
                         val cursor = mainActivity.contentResolver.query(uploadUri!!, null, null, null, null)
                         if(cursor != null){
