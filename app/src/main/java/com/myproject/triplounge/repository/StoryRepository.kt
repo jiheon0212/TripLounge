@@ -57,28 +57,12 @@ class StoryRepository {
 
             storyDataRef.push().setValue(storyDataClass).addOnCompleteListener(callback)
         }
-        fun getStoryAll(): MutableList<StoryDataClass> {
+        fun getStoryAll(callback: (Task<DataSnapshot>) -> Unit) {
 
-            val storyList = mutableListOf<StoryDataClass>()
             val database = FirebaseDatabase.getInstance()
             val storyDataRef = database.getReference("StoryData")
 
-            storyDataRef.get().addOnCompleteListener {
-
-                for (i in it.result.children){
-                    val storyIdx = i.child("storyIdx").value as Long
-                    val userNickname = i.child("userNickname").value as String
-                    val storyUploadDate = i.child("storyUploadDate").value as String
-                    val storyImage = i.child("storyImage").value as String
-                    val storyTitle = i.child("storyTitle").value as String
-                    val storyText = i.child("storyText").value as String
-
-                    val story = StoryDataClass(storyIdx, userNickname, storyUploadDate, storyImage, storyTitle, storyText)
-                    storyList.add(story)
-                }
-            }
-
-            return storyList
+            storyDataRef.get().addOnCompleteListener(callback)
         }
     }
 }

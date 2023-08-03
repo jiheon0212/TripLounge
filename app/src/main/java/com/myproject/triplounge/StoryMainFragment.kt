@@ -15,11 +15,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.myproject.triplounge.data.StoryDataClass
 import com.myproject.triplounge.databinding.FragmentStoryMainBinding
 import com.myproject.triplounge.databinding.StoryMainRowBinding
+import com.myproject.triplounge.repository.StoryRepository
 
 class StoryMainFragment : Fragment() {
 
     lateinit var fragmentStoryMainBinding: FragmentStoryMainBinding
     lateinit var mainActivity: MainActivity
+    val storyList = mutableListOf<StoryDataClass>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +31,21 @@ class StoryMainFragment : Fragment() {
         mainActivity = activity as MainActivity
 
         fragmentStoryMainBinding.run {
+
+            StoryRepository.getStoryAll {
+                for (i in it.result.children){
+                    val storyIdx = i.child("storyIdx").value as Long
+                    val userNickname = i.child("userNickname").value as String
+                    val storyUploadDate = i.child("storyUploadDate").value as String
+                    val storyImage = i.child("storyImage").value as String
+                    val storyTitle = i.child("storyTitle").value as String
+                    val storyText = i.child("storyText").value as String
+
+                    val story = StoryDataClass(storyIdx, userNickname, storyUploadDate, storyImage, storyTitle, storyText)
+                    storyList.add(story)
+                }
+                recyclerStoryMain.adapter?.notifyDataSetChanged()
+            }
 
             toolbarStoryMain.run {
                 title = "todo_story_main_fragment"
@@ -89,16 +106,21 @@ class StoryMainFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return 0
+            return storyList.size
         }
 
         override fun onBindViewHolder(holder: StoryMainViewHolder, position: Int) {
             holder.tvUserNickname.text = "unknown user_$position"
-            holder.tvDate
-            holder.ivUploaded
-            holder.tvStoryTitle
-            holder.tvStoryText
+            holder.tvDate.text = storyList[position].storyUploadDate
+            StoryRepository.getStoryImage(holder.ivUploaded, storyList[position].storyImage)
+            holder.tvStoryTitle.text = storyList[position].storyTitle
+            holder.tvStoryText.text = storyList[position].storyText
             holder.tvLikeCount.text = "liked : $position"
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        storyList.clear()
     }
 }
