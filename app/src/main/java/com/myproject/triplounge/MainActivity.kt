@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var activityMainBinding: ActivityMainBinding
     companion object{
+        val USER_LOGIN_FRAGMENT = "UserLoginFragment"
+        val USER_REGISTER_FRAGMENT = "UserRegisterFragment"
         val STORY_MAIN_FRAGMENT = "StoryMainFragment"
         val STORY_ADD_FRAGMENT = "StoryAddFragment"
         val STORY_RESULT_FRAGMENT = "StoryResultFragment"
@@ -36,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         requestPermissions(permissionList, 0)
 
         activityMainBinding.run {
-
+            replaceFragment(USER_LOGIN_FRAGMENT, false)
         }
 
         setContentView(activityMainBinding.root)
@@ -48,6 +50,8 @@ class MainActivity : AppCompatActivity() {
             STORY_MAIN_FRAGMENT -> StoryMainFragment()
             STORY_ADD_FRAGMENT -> StoryAddFragment()
             STORY_RESULT_FRAGMENT -> StoryResultFragment()
+            USER_LOGIN_FRAGMENT -> UserLoginFragment()
+            USER_REGISTER_FRAGMENT -> UserRegisterFragment()
 
             else -> Fragment()
         }

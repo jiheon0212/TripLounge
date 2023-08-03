@@ -9,7 +9,6 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcvMain"
-        android:name="com.myproject.triplounge.StoryMainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

@@ -19,6 +19,8 @@ import com.myproject.triplounge.repository.StoryRepository
 
 class StoryMainFragment : Fragment() {
 
+    // todo : 사용자 uid별로 게시물에 저장하여 내 게시물 페이지에서 자신이 작성한 게시물을 볼 수 있도록 설정해주기
+
     lateinit var fragmentStoryMainBinding: FragmentStoryMainBinding
     lateinit var mainActivity: MainActivity
     val storyList = mutableListOf<StoryDataClass>()

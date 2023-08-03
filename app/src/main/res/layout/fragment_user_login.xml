@@ -43,5 +43,11 @@
         android:id="@+id/btnUserLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="Get Login" />
+
+    <Button
+        android:id="@+id/btnUserLoginRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go to Register" />
 </LinearLayout>
