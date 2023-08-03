@@ -35,13 +35,13 @@ class StoryMainFragment : Fragment() {
             StoryRepository.getStoryAll {
                 for (i in it.result.children){
                     val storyIdx = i.child("storyIdx").value as Long
-                    val userNickname = i.child("userNickname").value as String
+                    val userName = i.child("userName").value as String
                     val storyUploadDate = i.child("storyUploadDate").value as String
                     val storyImage = i.child("storyImage").value as String
                     val storyTitle = i.child("storyTitle").value as String
                     val storyText = i.child("storyText").value as String
 
-                    val story = StoryDataClass(storyIdx, userNickname, storyUploadDate, storyImage, storyTitle, storyText)
+                    val story = StoryDataClass(storyIdx, userName, storyUploadDate, storyImage, storyTitle, storyText)
                     storyList.add(story)
                 }
                 recyclerStoryMain.adapter?.notifyDataSetChanged()
@@ -68,7 +68,7 @@ class StoryMainFragment : Fragment() {
     inner class StoryMainAdapter: RecyclerView.Adapter<StoryMainAdapter.StoryMainViewHolder>() {
         inner class  StoryMainViewHolder(storyMainRowBinding: StoryMainRowBinding): RecyclerView.ViewHolder(storyMainRowBinding.root) {
 
-            var tvUserNickname: TextView
+            var tvUserName: TextView
             var tvDate: TextView
             var ivUploaded: ImageView
             var tvStoryTitle: TextView
@@ -77,7 +77,7 @@ class StoryMainFragment : Fragment() {
             var tvLikeCount: TextView
 
             init {
-                tvUserNickname = storyMainRowBinding.tvUserNickname
+                tvUserName = storyMainRowBinding.tvUserName
                 tvDate = storyMainRowBinding.tvDate
                 ivUploaded = storyMainRowBinding.ivUploaded
                 tvStoryTitle = storyMainRowBinding.tvStoryTitle
@@ -110,7 +110,7 @@ class StoryMainFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: StoryMainViewHolder, position: Int) {
-            holder.tvUserNickname.text = "unknown user_$position"
+            holder.tvUserName.text = "unknown user_$position"
             holder.tvDate.text = storyList[position].storyUploadDate
             StoryRepository.getStoryImage(holder.ivUploaded, storyList[position].storyImage)
             holder.tvStoryTitle.text = storyList[position].storyTitle

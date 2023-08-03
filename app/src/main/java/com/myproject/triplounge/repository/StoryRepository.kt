@@ -10,7 +10,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.myproject.triplounge.data.StoryDataClass
-import kotlin.concurrent.thread
 
 class StoryRepository {
 
