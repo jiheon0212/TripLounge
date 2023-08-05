@@ -41,14 +41,20 @@ class UserRepository {
 
             userDataRef.push().setValue(userDataClass).addOnCompleteListener(callback)
         }
-        // todo : modify 시 UserData 하위 항목들이 전부 사라지는 현상 해결하기
-        fun modifyUserInfo(userDataClass: UserDataClass, callback: (Task<DataSnapshot>) -> Unit) {
+        // todo : modify 시 UserData uid가 중첩되어 생겨나는 현상 해결
+        fun modifyUserInfo(userDataClass: UserDataClass, callback: (Task<Void>) -> Unit) {
             val database = FirebaseDatabase.getInstance()
             val userDataRef = database.getReference("UserData")
 
             userDataRef.orderByChild("userUid").equalTo(userDataClass.userUid).get().addOnCompleteListener {
-                it.result.ref.setValue(userDataClass)
+                for (i in it.result.children) {
+                    i.ref.removeValue()
+                }
+                it.result.ref.push().setValue(userDataClass).addOnCompleteListener(callback)
             }
+        }
+        fun deleteUserInfo() {
+            
         }
         fun getUserInfo(uid: String?, callback: (Task<DataSnapshot>) -> Unit) {
             val database = FirebaseDatabase.getInstance()

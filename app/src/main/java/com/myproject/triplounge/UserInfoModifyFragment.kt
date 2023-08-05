@@ -29,16 +29,18 @@ class UserInfoModifyFragment : Fragment() {
 
         fragmentUserInfoModifyBinding.run {
 
+            // todo : 정보수정 페이지에서 기존의 정보들이 hint or text로 표기되도록 설정하기
+
             radioGroupUserInfoModify.run {
                 userSex = if (rbMale.isChecked) {
-                    "Female"
-                } else {
                     "Male"
+                } else {
+                    "Female"
                 }
             }
 
             btnUserInfoModifyBirth.setOnClickListener {
-
+                // todo : datepicker 통해서 생년월일 입력
             }
 
             toolbarUserInfoModify.run {
@@ -64,10 +66,9 @@ class UserInfoModifyFragment : Fragment() {
 
                             val userData = UserDataClass(userIdx, userUid, userId, userPw, userNickname, userSex, userBirthDate, phoneNumber)
                             UserRepository.modifyUserInfo(userData) {
-                                UserRepository.setUserIdx(userData.userIdx) {
-                                    mainActivity.replaceWithBundleFragment(MainActivity.STORY_MAIN_FRAGMENT, false, null)
-                                    Snackbar.make(fragmentUserInfoModifyBinding.root, "Modify Success", Snackbar.LENGTH_SHORT).show()
-                                }
+                                mainActivity.replaceWithBundleFragment(MainActivity.STORY_MAIN_FRAGMENT, false, null)
+                                //Snackbar.make(fragmentUserInfoModifyBinding.root, "Modify Success", Snackbar.LENGTH_SHORT).show()
+
                             }
                         }
                     }
