@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
+import com.myproject.triplounge.data.UserDataClass
 import com.myproject.triplounge.databinding.FragmentUserLoginBinding
 import com.myproject.triplounge.repository.UserRepository
 
@@ -25,6 +26,10 @@ class UserLoginFragment : Fragment() {
 
         fragmentUserLoginBinding.run {
 
+            toolbarUserLogin.run {
+                title = "user_login_fragment"
+            }
+
             btnUserLogin.setOnClickListener {
 
                 val id = tiedtUserLoginId.text.toString()
@@ -33,7 +38,7 @@ class UserLoginFragment : Fragment() {
                 UserRepository.loginUser(id, pw){
 
                     if (it.isSuccessful) {
-                        mainActivity.replaceFragment(MainActivity.STORY_MAIN_FRAGMENT, false)
+                        mainActivity.replaceWithBundleFragment(MainActivity.STORY_MAIN_FRAGMENT, false, null)
                         Snackbar.make(fragmentUserLoginBinding.root, "Login Success", Snackbar.LENGTH_SHORT).show()
                     }
                     else {
@@ -41,6 +46,7 @@ class UserLoginFragment : Fragment() {
                     }
                 }
             }
+
             btnUserLoginRegister.setOnClickListener {
                 mainActivity.replaceFragment(MainActivity.USER_REGISTER_FRAGMENT, true)
             }
@@ -48,4 +54,5 @@ class UserLoginFragment : Fragment() {
 
         return fragmentUserLoginBinding.root
     }
+
 }

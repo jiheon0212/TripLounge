@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.myproject.triplounge.data.UserDataClass
 import com.myproject.triplounge.databinding.FragmentUserRegisterBinding
 import com.myproject.triplounge.repository.UserRepository
 
@@ -24,6 +25,10 @@ class UserRegisterFragment : Fragment() {
 
         fragmentUserRegisterBinding.run {
 
+            toolbarUserRegister.run {
+                title = "user_register_fragment"
+            }
+
             btnUserRegister.setOnClickListener {
 
                 // todo : 유효성 검사 & id 중복 검사 dialog 생성하기
@@ -32,8 +37,19 @@ class UserRegisterFragment : Fragment() {
 
                 UserRepository.createUser(id, pw){
                     if (it.isSuccessful) {
-                        Snackbar.make(fragmentUserRegisterBinding.root, "Complete", Snackbar.LENGTH_SHORT).show()
-                        mainActivity.replaceFragment(MainActivity.USER_LOGIN_FRAGMENT, true)
+                        UserRepository.getUserIdx {
+                            var userIdx = it.result.value as Long
+                            userIdx++
+                            val uid = UserRepository.getUserUid()
+
+                            val userDataClass = UserDataClass(userIdx, uid, id, pw, "null", "null", "null", "null")
+                            UserRepository.addUserInfo(userDataClass){
+                                UserRepository.setUserIdx(userIdx){
+                                    Snackbar.make(fragmentUserRegisterBinding.root, "Complete", Snackbar.LENGTH_SHORT).show()
+                                    mainActivity.replaceFragment(MainActivity.USER_LOGIN_FRAGMENT, true)
+                                }
+                            }
+                        }
                     }
                     else {
                         Snackbar.make(fragmentUserRegisterBinding.root, "Failed", Snackbar.LENGTH_SHORT).show()

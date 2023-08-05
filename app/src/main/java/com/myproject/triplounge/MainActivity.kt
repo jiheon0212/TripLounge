@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         val STORY_MAIN_FRAGMENT = "StoryMainFragment"
         val STORY_ADD_FRAGMENT = "StoryAddFragment"
         val STORY_RESULT_FRAGMENT = "StoryResultFragment"
+        val USER_INFO_MODIFY_FRAGMENT = "UserInfoModifyFragment"
     }
     val permissionList = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -47,14 +48,38 @@ class MainActivity : AppCompatActivity() {
     fun replaceFragment(name: String, addToBackStack: Boolean){
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         var newFragment = when(name){
-            STORY_MAIN_FRAGMENT -> StoryMainFragment()
+
             STORY_ADD_FRAGMENT -> StoryAddFragment()
+            STORY_MAIN_FRAGMENT -> StoryMainFragment()
+            USER_INFO_MODIFY_FRAGMENT -> UserInfoModifyFragment()
             STORY_RESULT_FRAGMENT -> StoryResultFragment()
             USER_LOGIN_FRAGMENT -> UserLoginFragment()
             USER_REGISTER_FRAGMENT -> UserRegisterFragment()
 
             else -> Fragment()
         }
+
+        fragmentTransaction.replace(R.id.fcvMain, newFragment)
+
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(name)
+        }
+        fragmentTransaction.commit()
+    }
+    fun replaceWithBundleFragment(name: String, addToBackStack: Boolean, bundle: Bundle?){
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        var newFragment = when(name){
+
+            STORY_ADD_FRAGMENT -> StoryAddFragment()
+            STORY_MAIN_FRAGMENT -> StoryMainFragment()
+            USER_INFO_MODIFY_FRAGMENT -> UserInfoModifyFragment()
+            STORY_RESULT_FRAGMENT -> StoryResultFragment()
+            USER_LOGIN_FRAGMENT -> UserLoginFragment()
+            USER_REGISTER_FRAGMENT -> UserRegisterFragment()
+
+            else -> Fragment()
+        }
+        newFragment?.arguments = bundle
 
         fragmentTransaction.replace(R.id.fcvMain, newFragment)
 

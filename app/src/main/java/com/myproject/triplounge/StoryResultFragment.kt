@@ -23,12 +23,25 @@ class StoryResultFragment : Fragment() {
         fragmentStoryResultBinding.run {
 
             toolbarStoryResult.run {
+
                 title = "todo_story_result_fragment"
                 inflateMenu(R.menu.story_result_mine_menu)
+
+                setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
+                setNavigationOnClickListener {
+                    mainActivity.removeFragment(MainActivity.STORY_RESULT_FRAGMENT)
+                }
+
                 setOnMenuItemClickListener {
+
                     when (it.itemId){
-                        R.id.itemStoryResultDelete -> {}
-                        R.id.itemStoryResultModify -> {}
+
+                        R.id.itemStoryResultDelete -> {
+
+                        }
+                        R.id.itemStoryResultModify -> {
+
+                        }
                     }
                     false
                 }

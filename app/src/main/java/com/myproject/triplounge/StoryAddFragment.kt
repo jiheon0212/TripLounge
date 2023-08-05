@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.myproject.triplounge.data.StoryDataClass
 import com.myproject.triplounge.databinding.FragmentStoryAddBinding
 import com.myproject.triplounge.repository.StoryRepository
+import com.myproject.triplounge.repository.UserRepository
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -39,10 +41,11 @@ class StoryAddFragment : Fragment() {
         fragmentStoryAddBinding = FragmentStoryAddBinding.inflate(layoutInflater)
         mainActivity = activity as MainActivity
         albumLauncher = albumSetting(fragmentStoryAddBinding.ivbtnStoryAddUpload)
+        val uid = UserRepository.getUserUid()
 
         fragmentStoryAddBinding.run {
 
-            // imagebtn click -> select image
+            // todo : imagebtn click -> select image
             ivbtnStoryAddUpload.setOnClickListener {
 
                 // get image from album
@@ -59,12 +62,17 @@ class StoryAddFragment : Fragment() {
 
                 title = "todo_story_add_fragment"
                 inflateMenu(R.menu.story_add_menu)
+
+                setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
+                setNavigationOnClickListener {
+                    mainActivity.removeFragment(MainActivity.STORY_ADD_FRAGMENT)
+                }
+
                 setOnMenuItemClickListener {
 
                     StoryRepository.getStoryIdx {
-
                         // todo : 게시물 삭제 시 storyIdx 감소 메서드 제작
-                        // class 매개 변수 setting
+
                         var storyIdx = it.result.value as Long
                         storyIdx++
                         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -76,22 +84,27 @@ class StoryAddFragment : Fragment() {
                         } else {
                             "images/img_${System.currentTimeMillis()}.jpg"
                         }
-                        val storyDataClass = StoryDataClass(storyIdx, "unknown user", writeDate, fileName, title, text)
 
                         // storage image upload method 제작
-                        StoryRepository.addStory(storyDataClass) {
+                        UserRepository.getUserId(uid) {
+                            for (i in it.result.children) {
+                                val userId = i.child("userId").value as String
+                                val storyDataClass = StoryDataClass(storyIdx, userId, writeDate, fileName, title, text)
+                                StoryRepository.addStory(storyDataClass) {
 
-                            StoryRepository.setStoryIdx(storyIdx) {
+                                    StoryRepository.setStoryIdx(storyIdx) {
 
-                                if (uploadUri != null) {
-                                    StoryRepository.uploadStoryImage(uploadUri!!, fileName){
-                                        Snackbar.make(fragmentStoryAddBinding.root, "Image Uploaded", Snackbar.LENGTH_SHORT).show()
-                                        mainActivity.replaceFragment(MainActivity.STORY_MAIN_FRAGMENT, true)
+                                        if (uploadUri != null) {
+                                            StoryRepository.uploadStoryImage(uploadUri!!, fileName){
+                                                Snackbar.make(fragmentStoryAddBinding.root, "Image Uploaded", Snackbar.LENGTH_SHORT).show()
+                                                mainActivity.replaceWithBundleFragment(MainActivity.STORY_MAIN_FRAGMENT, false, null)
+                                            }
+                                        }
+                                        else {
+                                            Snackbar.make(fragmentStoryAddBinding.root, "Image is Null", Snackbar.LENGTH_SHORT).show()
+                                            mainActivity.replaceWithBundleFragment(MainActivity.STORY_MAIN_FRAGMENT, false, null)
+                                        }
                                     }
-                                }
-                                else {
-                                    Snackbar.make(fragmentStoryAddBinding.root, "Image is Null", Snackbar.LENGTH_SHORT).show()
-                                    mainActivity.replaceFragment(MainActivity.STORY_MAIN_FRAGMENT, true)
                                 }
                             }
                         }

@@ -11,11 +11,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.FirebaseDatabase
 import com.myproject.triplounge.data.StoryDataClass
 import com.myproject.triplounge.databinding.FragmentStoryMainBinding
 import com.myproject.triplounge.databinding.StoryMainRowBinding
 import com.myproject.triplounge.repository.StoryRepository
+import com.myproject.triplounge.repository.UserRepository
 
 class StoryMainFragment : Fragment() {
 
@@ -52,8 +54,20 @@ class StoryMainFragment : Fragment() {
             toolbarStoryMain.run {
                 title = "todo_story_main_fragment"
                 inflateMenu(R.menu.story_main_menu)
+
                 setOnMenuItemClickListener {
-                    mainActivity.replaceFragment(MainActivity.STORY_ADD_FRAGMENT, true)
+
+                    when (it.itemId) {
+
+                        R.id.itemStoryMainUserModify -> {
+                            mainActivity.replaceWithBundleFragment(MainActivity.USER_INFO_MODIFY_FRAGMENT, true, null)
+                        }
+                        R.id.itemStoryMainAdd -> {
+                            mainActivity.replaceWithBundleFragment(MainActivity.STORY_ADD_FRAGMENT, true, null)
+                        }
+
+                    }
+
                     false
                 }
                 recyclerStoryMain.run {
@@ -112,7 +126,7 @@ class StoryMainFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: StoryMainViewHolder, position: Int) {
-            holder.tvUserName.text = "unknown user_$position"
+            holder.tvUserName.text = storyList[position].userName
             holder.tvDate.text = storyList[position].storyUploadDate
             StoryRepository.getStoryImage(holder.ivUploaded, storyList[position].storyImage)
             holder.tvStoryTitle.text = storyList[position].storyTitle
