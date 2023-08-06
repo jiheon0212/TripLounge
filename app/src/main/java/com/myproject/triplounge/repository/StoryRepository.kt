@@ -63,5 +63,25 @@ class StoryRepository {
 
             storyDataRef.get().addOnCompleteListener(callback)
         }
+
+        fun storyModify(storyDataClass: StoryDataClass, callback: (Task<Void>) -> Unit) {
+            val database = FirebaseDatabase.getInstance()
+            val storyDataRef = database.getReference("StoryData")
+            storyDataRef.orderByChild("storyIdx").equalTo(storyDataClass.storyIdx.toDouble()).get().addOnCompleteListener {
+                for (i in it.result.children) {
+                    i.ref.removeValue()
+                }
+                it.result.ref.push().setValue(storyDataClass).addOnCompleteListener(callback)
+            }
+        }
+        fun storyDelete(storyDataClass: StoryDataClass, callback: (Task<Void>) -> Unit) {
+            val database = FirebaseDatabase.getInstance()
+            val storyDataRef = database.getReference("StoryData")
+            storyDataRef.orderByChild("storyIdx").equalTo(storyDataClass.storyIdx.toDouble()).get().addOnCompleteListener {
+                for (i in it.result.children) {
+                    i.ref.removeValue()
+                }
+            }
+        }
     }
 }

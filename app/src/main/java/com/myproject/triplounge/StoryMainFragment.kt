@@ -104,7 +104,10 @@ class StoryMainFragment : Fragment() {
                 }
                 tvLikeCount = storyMainRowBinding.tvLikeCount
                 storyMainRowBinding.root.setOnClickListener {
-                    mainActivity.replaceFragment(MainActivity.STORY_RESULT_FRAGMENT, true)
+                    val storyData = storyList[adapterPosition]
+                    val newBundle = Bundle()
+                    newBundle.putSerializable("storyData", storyData)
+                    mainActivity.replaceWithBundleFragment(MainActivity.STORY_RESULT_FRAGMENT, true, newBundle)
                 }
             }
         }

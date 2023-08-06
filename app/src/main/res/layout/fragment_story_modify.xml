@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".StoryAddFragment" >
+    tools:context=".StoryModifyFragment" >
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbarStoryAdd"
+        android:id="@+id/toolbarStoryModify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"

@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         val STORY_ADD_FRAGMENT = "StoryAddFragment"
         val STORY_RESULT_FRAGMENT = "StoryResultFragment"
         val USER_INFO_MODIFY_FRAGMENT = "UserInfoModifyFragment"
+        val STORY_MODIFY_FRAGMENT = "StoryModifyFragment"
     }
     val permissionList = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             STORY_RESULT_FRAGMENT -> StoryResultFragment()
             USER_LOGIN_FRAGMENT -> UserLoginFragment()
             USER_REGISTER_FRAGMENT -> UserRegisterFragment()
+            STORY_MODIFY_FRAGMENT -> StoryModifyFragment()
 
             else -> Fragment()
         }
@@ -76,6 +78,7 @@ class MainActivity : AppCompatActivity() {
             STORY_RESULT_FRAGMENT -> StoryResultFragment()
             USER_LOGIN_FRAGMENT -> UserLoginFragment()
             USER_REGISTER_FRAGMENT -> UserRegisterFragment()
+            STORY_MODIFY_FRAGMENT -> StoryModifyFragment()
 
             else -> Fragment()
         }
